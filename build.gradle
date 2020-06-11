@@ -1,16 +1,12 @@
 
-
 plugins {
-    // Apply the java plugin to add support for Java
-    id 'java'
 
-    // Apply the application plugin to add support for building a CLI application.
+    id 'java'
     id 'application'
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
+
     jcenter()
 }
 
@@ -18,7 +14,10 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.+'
+
+    // adicionando dependencia do rest assured
+    // da versao 4 pra cima
+    testImplementation 'io.rest-assured:rest-assured:4.+'
 }
 
-// criar task para executar pela linha de comando
-task teste(type:Test){}
+

@@ -3,13 +3,71 @@
  */
 package fundamentos.ra.gradle;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.apache.http.HttpStatus;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        assertThat(1,is(1));
+
+
+    @BeforeClass
+    public static void setUp(){
+
+        // quando o teste falha, habilita os logs da requisicao
+        // permitndo mostra como a requisicao foi feita
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
     }
+
+    @Test
+    public void testListMetaDadosUsuario() {
+
+        // url que quero testar
+        when().
+
+                // testa metodo GET
+                get("https://reqres.in/api/users?page=2").
+
+        // validacoes que faco para essa url
+        then().
+                // valida status code
+                statusCode(HttpStatus.SC_OK).
+
+                // valida um campo do json de resposta
+                body("page",is(2)).
+
+                // valida se o campo data nao esta vazio
+                body("data",is(notNullValue()));
+
+    }
+
+    @Test
+    public void testCriarUsuarioComSucesso(){
+
+        // .log.all() mostra como ta indo a requisicao
+        given().
+
+                // informa que o conteudo do body eh um json
+                contentType(ContentType.JSON).
+
+                // conteudo do body
+                body("{\"name\": \"vaneyck\", \"job\": \"analista de testes\"}").
+
+        when().
+                // testa metodo POST
+                post("https://reqres.in/api/users").
+
+        then().
+                statusCode(HttpStatus.SC_CREATED).
+
+                body("name",is("vaneyck"));
+    }
+
 }
