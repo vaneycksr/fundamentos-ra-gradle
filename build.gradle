@@ -12,6 +12,9 @@ repositories {
 
 dependencies {
 
+    // dependencia para serializar objeto
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.+'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.+'
 
