@@ -6,13 +6,15 @@ public class Usuario {
     // eh como se definisse os campos que vao ser preenchidos no body
     private String name;
     private String job;
+    private String email;
 
     // boa pratica criar construtor sem nada
     public Usuario(){}
 
-    public Usuario(String name, String job) {
+    public Usuario(String name, String job, String email) {
         this.name = name;
         this.job = job;
+        this.email = email;
     }
 
     // Necessario os gets para ocorrer a serializacao.
@@ -23,5 +25,11 @@ public class Usuario {
 
     public String getJob() {
         return job;
+    }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email){
+        this.email = email;
     }
 }

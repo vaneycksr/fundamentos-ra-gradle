@@ -4,31 +4,21 @@
 package fundamentos.ra.gradle.teste;
 
 import fundamentos.ra.gradle.dominio.Usuario;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class UsuarioTeste {
+// Usa heranca para pegar o setup
+public class UsuarioTeste extends BaseTeste {
 
+    // criar variaveis estaticas para melhor leitura dos testes
+    private static final String LISTA_USUARIOS_ENDPOINT = "/users";
+    private static final String CRIAR_USUARIO_ENDPOINT = "/user";
 
-    @BeforeClass
-    public static void setUp(){
-
-        // quando o teste falha, habilita os logs da requisicao
-        // permitndo mostra como a requisicao foi feita
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-
-        // configura para todos os testes o endpoint
-        baseURI = "https://reqres.in";
-        // configura o path para todos os testes
-        basePath = "/api";
-    }
 
     @Test
     public void testListMetaDadosUsuario() {
@@ -40,7 +30,7 @@ public class UsuarioTeste {
         when().
 
                 // testa metodo GET
-                get("/users").
+                get(LISTA_USUARIOS_ENDPOINT).
 
         // validacoes que faco para essa url
         then().
@@ -59,21 +49,21 @@ public class UsuarioTeste {
     public void testCriarUsuarioComSucesso(){
 
         // instancio o usuario, para passar os campos do json
-        Usuario usuario = new Usuario("vaneyck","analista de teste");
+        Usuario usuario = new Usuario("vaneyck","analista de teste","van@gmail.com");
 
 
         // .log.all() mostra como ta indo a requisicao
         given().
 
                 // informa que o conteudo do body eh um json
-                contentType(ContentType.JSON).
+                //contentType(ContentType.JSON).
 
                 // conteudo do body
                 body(usuario).
 
         when().
                 // testa metodo POST
-                post("/user").
+                post(CRIAR_USUARIO_ENDPOINT).
 
         then().
                 statusCode(HttpStatus.SC_CREATED).
