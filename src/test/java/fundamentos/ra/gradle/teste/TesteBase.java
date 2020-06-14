@@ -2,7 +2,10 @@ package fundamentos.ra.gradle.teste;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.ResponseSpecification;
+import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 
 import static io.restassured.RestAssured.basePath;
@@ -30,6 +33,12 @@ public class TesteBase {
                 .setContentType(ContentType.JSON)
                 .build();
 
+
+        // cria um responseSpecification, verifica se a resposta de todos os testes vem
+        // em formato de json
+        RestAssured.responseSpecification = new ResponseSpecBuilder()
+                .expectContentType(ContentType.JSON)
+                .build();
 
     }
 

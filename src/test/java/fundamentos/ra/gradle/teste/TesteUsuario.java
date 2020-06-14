@@ -8,8 +8,8 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 // Usa heranca para pegar o setup
 public class TesteUsuario extends TesteBase {
@@ -17,6 +17,7 @@ public class TesteUsuario extends TesteBase {
     // criar variaveis estaticas para melhor leitura dos testes
     private static final String LISTA_USUARIOS_ENDPOINT = "/users";
     private static final String CRIAR_USUARIO_ENDPOINT = "/user";
+    private static final String MOSTRAR_USUARIO_ENDPOINT = "/users/{userId}";
 
 
     @Test
@@ -75,7 +76,7 @@ public class TesteUsuario extends TesteBase {
 
         int paginaEsperada = 2;
 
-        // guardando uma informacao que vem na resposta de uma requisicao
+
         int perPageEsperado = retornaPerPageEsperado(paginaEsperada);
 
         given().
@@ -98,17 +99,44 @@ public class TesteUsuario extends TesteBase {
 
     }
 
+
+    @Test
+    public void testMostraUsuarioEspecifico(){
+
+        Usuario usuario = given().
+                // criada para passar o id do usuario
+                pathParam("userId",2).
+        when().
+                get(MOSTRAR_USUARIO_ENDPOINT).
+        then().
+                statusCode(HttpStatus.SC_OK).
+
+        // na resposta do get, pega o campo data, e passa como parametro a classe na qual tem os atributos
+        // que permitem fazer as validacoes
+        extract().
+                body().jsonPath().getObject("data",Usuario.class);
+
+        // realizand as assertivas
+        assertThat(usuario.getEmail(), containsString("@reqres.in"));
+        assertThat(usuario.getName(), is("Janet"));
+        assertThat(usuario.getLastname(), is("Weaver"));
+
+    }
+
+
+
+    // guardando uma informacao que vem na resposta de uma requisicao
     private int retornaPerPageEsperado(int page) {
         return given().
-                            param("page",page).
-                          when().
-                            get(LISTA_USUARIOS_ENDPOINT).
-                          then().
-                          // faz de novo a requisicao pra checar se realmente bateu no endpoint
-                            statusCode(HttpStatus.SC_OK).
-                          // extrai o valor do campo per_page e atribui a variavel
-                          extract().
-                            path("per_page");
+                param("page",page).
+              when().
+                get(LISTA_USUARIOS_ENDPOINT).
+              then().
+              // faz de novo a requisicao pra checar se realmente bateu no endpoint
+                statusCode(HttpStatus.SC_OK).
+              // extrai o valor do campo per_page e atribui a variavel
+              extract().
+                path("per_page");
     }
 
 }
