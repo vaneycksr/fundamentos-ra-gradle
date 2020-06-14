@@ -4,7 +4,6 @@
 package fundamentos.ra.gradle.teste;
 
 import fundamentos.ra.gradle.dominio.Usuario;
-import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 // Usa heranca para pegar o setup
-public class UsuarioTeste extends BaseTeste {
+public class TesteUsuario extends TesteBase {
 
     // criar variaveis estaticas para melhor leitura dos testes
     private static final String LISTA_USUARIOS_ENDPOINT = "/users";
@@ -21,7 +20,7 @@ public class UsuarioTeste extends BaseTeste {
 
 
     @Test
-    public void testListMetaDadosUsuario() {
+    public void testMostraPaginaEspecifica() {
 
         given().
                 params("page","2").
@@ -69,6 +68,47 @@ public class UsuarioTeste extends BaseTeste {
                 statusCode(HttpStatus.SC_CREATED).
 
                 body("name",is("vaneyck"));
+    }
+
+    @Test
+    public void testTamanhoDosItensMostradosIgualAoPerPage() {
+
+        int paginaEsperada = 2;
+
+        // guardando uma informacao que vem na resposta de uma requisicao
+        int perPageEsperado = retornaPerPageEsperado(paginaEsperada);
+
+        given().
+                params("page",paginaEsperada).
+
+        when().
+                get(LISTA_USUARIOS_ENDPOINT).
+        then().
+
+                statusCode(HttpStatus.SC_OK).
+
+                // o rest assured transforma o array data em um groovy collection
+                body(
+                        "page",is(paginaEsperada),
+                        "data.size()",is(perPageEsperado),
+                        // pega cada item do data e checa se o campo avatar comeca com o site da amazon
+                        "data.findAll { it.avatar.startsWith('https://s3.amazonaws.com') }.size()", is(perPageEsperado)
+                );
+
+
+    }
+
+    private int retornaPerPageEsperado(int page) {
+        return given().
+                            param("page",page).
+                          when().
+                            get(LISTA_USUARIOS_ENDPOINT).
+                          then().
+                          // faz de novo a requisicao pra checar se realmente bateu no endpoint
+                            statusCode(HttpStatus.SC_OK).
+                          // extrai o valor do campo per_page e atribui a variavel
+                          extract().
+                            path("per_page");
     }
 
 }

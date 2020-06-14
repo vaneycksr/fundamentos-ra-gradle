@@ -9,7 +9,7 @@ import static io.restassured.RestAssured.basePath;
 import static io.restassured.RestAssured.baseURI;
 
 // Classe criada para evitar duplicacao de codigo
-public class BaseTeste {
+public class TesteBase {
 
     @BeforeClass
     public static void setUp(){
