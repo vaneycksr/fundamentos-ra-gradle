@@ -7,6 +7,9 @@ import fundamentos.ra.gradle.dominio.Usuario;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +27,7 @@ public class TesteUsuario extends TesteBase {
     public void testMostraPaginaEspecifica() {
 
         given().
-                params("page","2").
+                param("page","2").
 
         // url que quero testar
         when().
@@ -49,7 +52,12 @@ public class TesteUsuario extends TesteBase {
     public void testCriarUsuarioComSucesso(){
 
         // instancio o usuario, para passar os campos do json
-        Usuario usuario = new Usuario("vaneyck","analista de teste","van@gmail.com");
+        // Usuario usuario = new Usuario("vaneyck","analista de teste","van@gmail.com","rosas");
+
+        // Usando hashmap para passar no json apenas os campos necessarios
+        Map<String, String> usuario = new HashMap<>();
+        usuario.put("name","vaneyck");
+        usuario.put("job","analista de testes");
 
 
         // .log.all() mostra como ta indo a requisicao
@@ -80,7 +88,7 @@ public class TesteUsuario extends TesteBase {
         int perPageEsperado = retornaPerPageEsperado(paginaEsperada);
 
         given().
-                params("page",paginaEsperada).
+                param("page",paginaEsperada).
 
         when().
                 get(LISTA_USUARIOS_ENDPOINT).
