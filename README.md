@@ -24,3 +24,11 @@ $ sudo vi /etc/profile.d/gradle.sh
 ```shell
 $ source /etc/profile.d/gradle.sh
 ```
+
+### Comandos Gradle
+
+
+* `$ gradle init` - cria um projeto gradle
+* `$ gradle wrapper` - necessário para criar o Gradle wrapper para poder rodar o gradlew
+* `$ .gradlew tasks` - mostra todas as tarefas disponíveis
+* `$ ./gradlew test` - roda todos os testes do pacote 'src/test'
